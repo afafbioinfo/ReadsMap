@@ -1,0 +1,29 @@
+@author SAAIDI afaf 2016, AMIB Team , LIX.
+ReadsMap program is implemented under python 2.7 version.
+ReadsMap allows to map single end reads against reference sequence (RNAs) using TMAP aligner.
+
+The version used for TMAP  is 3.0.1 
+The version used for samtools is 0.1.19
+
+Setting:
+Parameters could be adjusted by modifying the configuration file MapReads.Config.
+
+
+Input:
+The program requires the Fastqfiles from the sequencer to add to "FastqFiles" folder and the reference sequences to put
+in the "FastaFiles" folder. Examples of input files are provided. The input folders should be decompressed in 
+the same directory as the program.
+
+The command line to run ReadsMap program:
+    python ReadsMap.py
+
+Output:
+The program first generates a global fasta file containing all the sequences.
+Then, it performs a mapping via TMAP program,this results in generating mapped reads in SAM/BAM formats[SamFiles/ BamFiles].
+In addition, the program generates the input reads format required to run SHAPEMapper program,namely:
+RNA_of_reference, Read_starting_position, quality , Cigar_code, sequence, Phred-Q
+
+ReadsMap advantages:
+-Many fastqfiles could be treated simultaneously as well as many reference sequences
+-Generates input for SHAPEMapper program for single end reads
+-If the option ReadsAnalysis is set to True, a file 'ReadsAnalysis.txt' that contains details about the mapping statistics is generated.
