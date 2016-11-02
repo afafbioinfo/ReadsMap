@@ -19,10 +19,10 @@ def CreateFold(Folders):
 def ConcatenateFiles(PathFile, FileExtension, Fileout):
     sort_out = open(Fileout, 'wb', 0)
     sort_in = PathFile + '/*.' + FileExtension
-    subprocess.Popen("cat " + sort_in, stdin=subprocess.PIPE, stdout=sort_out, shell=True)
+    subprocess.call("cat " + sort_in, stdin=subprocess.PIPE, stdout=sort_out, shell=True)
 
 def TMAPIndexSeq(Referencesequence):
-    subprocess.Popen('tmap index -f' + Referencesequence, shell=True).wait()
+    subprocess.call('tmap index -f' + Referencesequence, shell=True)
     print "Indexing reference sequence(s) done with success"
 
 
@@ -46,7 +46,8 @@ def TMAPmapping(FastqFiles, Referencesequence, SamFolder, BamFolder,Alignedreads
             bamfile = BamFolder + "/" + filename + ".bam"
 
             command = " tmap mapall -n 24 -f  " + Referencesequence + " -r " + fastqfile + " -v -Y -u -a 3 -s " +samfile  + " -o O stage1 map4"
-            p=subprocess.Popen( command, shell=True)
+            print command ,"lll"
+            p = subprocess.Popen(command, shell=True)
             # This command required the sudo approval through communicating the password
             p.communicate(sudo_password + '\n')[1]
             print "The mapping for", filename, "is achieved with success"
@@ -76,14 +77,15 @@ def ParseBamFile(BamFolder, Alignedreads,filename, QualityThresh,listRnas):
 
     Qualin=BamFolder + "/" +filename+'.sort.bam'
     commandfilterquality = "samtools view -F 0x04  -q " + str(QualityThresh)+" "+Qualin
+    #print commandfilterquality ,'lll'
     print ("p1 running")
-    p1 = subprocess.Popen(commandfilterquality, stdin=open(Qualin,'r'),stdout=subprocess.PIPE, shell=True)
-    #Pipe the result to p2 process
-    print ("p2 runnig")
-    p2 = subprocess.Popen(r'''awk '{print $3 "\t" $4 "\t" $5 "\t"$6 "\t"$10 "\t"$11 "\t" }' ''', stdin=p1.stdout,stdout= subprocess.PIPE, shell=True)
-    for Rna in listRnas:
-        p3 =subprocess.Popen("grep -i "+ Rna , stdin=p2.stdout,stdout=open(Alignedreads+"/"+Rna+'.'+filename + ".txt", 'w'), shell=True)
 
+    subprocess.Popen(commandfilterquality, stdin=open(Qualin, 'r'), stdout=open("inter1.txt","w"), shell=True).wait()
+    subprocess.Popen('''awk '{print $3 "\t" $4 "\t" $5 "\t"$6 "\t"$10 "\t"$11 }' ''', stdin=open("inter1.txt",'r'),
+        stdout=open("inter2.txt","w"), shell=True).wait()
+    for Rna in listRnas:
+        subprocess.Popen("grep -i " + Rna, stdin=open("inter2.txt","r"),
+            stdout=open(Alignedreads + "/" + Rna + '.' + filename + ".txt", 'w'), shell=True).wait()
 def ReadsAnalysis(BamFolder):
     for filee in os.listdir(BamFolder):
         if os.path.splitext(filee)[-1]==".bam":
