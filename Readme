@@ -20,8 +20,9 @@ The command line to run ReadsMap program:
 Output:
 The program first generates a global fasta file containing all the sequences.
 Then, it performs a mapping via TMAP program,this results in generating mapped reads in SAM/BAM formats[SamFiles/ BamFiles].
-In addition, the program generates the input reads format required to run SHAPEMapper program,namely:
+In addition, the program generates the input reads format required to run SHAPEMapper_modified version program,namely:
 RNA_of_reference, Read_starting_position, quality , Cigar_code, sequence, Phred-Q
+This input is stored in Aligned_reads folder. 
 
 ReadsMap advantages:
 -Many fastqfiles could be treated simultaneously as well as many reference sequences
